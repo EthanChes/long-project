@@ -13,6 +13,9 @@ import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 class HelloWorld {
+    static float red = 0.0f;
+    static float blue = 0.0f;
+    static float green = 0.0f;
 
     // The window handle
     private long window;
@@ -55,6 +58,19 @@ class HelloWorld {
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
             if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
                 glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+        });
+
+        // Change Color of Window
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> { float r = red ; float g = green ; float b = blue;
+            if ( key == GLFW_KEY_SPACE && action == GLFW_RELEASE )
+               if (r <= 1){ r += .1; }
+                else if (b <= 1) { b += .1; }
+                else if (g <= 1) { g += .1; }
+                else { r = 0; g = 0; b = 0;}
+               glClearColor(r,g,b,0.0f);
+                float place_hold = red = r;
+                float place_hold2 = blue = b ;
+                float place_hold3 = green = g ;
         });
 
         // Get the thread stack and push a new frame
