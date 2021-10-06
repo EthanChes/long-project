@@ -25,6 +25,8 @@ class HelloWorld {
         // This is a test push
         init();
         loop();
+        // Delete this
+        System.out.println("Hi");
 
         // Free the window callbacks and destroy the window
         glfwFreeCallbacks(window);
