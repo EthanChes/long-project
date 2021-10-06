@@ -22,11 +22,8 @@ class HelloWorld {
 
     public void run() {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
-        // This is a test push
         init();
         loop();
-        // Delete this
-        System.out.println("Hi");
 
         // Free the window callbacks and destroy the window
         glfwFreeCallbacks(window);
