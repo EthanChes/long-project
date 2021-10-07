@@ -53,34 +53,32 @@ class HelloWorld {
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
         // Create the window
-        window = glfwCreateWindow(300, 300, "Hello World!", NULL, NULL);
+        window = glfwCreateWindow(1000, 1000, "Color Wheel", NULL, NULL);
         if ( window == NULL )
             throw new RuntimeException("Failed to create the GLFW window");
 
-        // Setup a key callback. It will be called every time a key is pressed, repeated or released.
-        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
-                glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
-        });
 
         // Change Color of Window by Hitting Space in Color Wheel Order.
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {boolean up_col = up_color; float r = red ; float g = green ; float b = blue;
-            if ( key == GLFW_KEY_SPACE && action == GLFW_RELEASE )
-                if (r <= 1 && up_col){ r += .1;}
-                else if (b <= 1 && up_col) { b += .1; }
-                else if (g <= 1 && up_col) { g += .1; if (g >= .99) {up_col = false;} }
-                else if (r > 0 && (! up_col)) {r -= .1;}
-                else if (b > 0 && (! up_col)) {b -= .1;}
-                else if (g > .1 && (! up_col)) {g -=.1;}
+            if ( (key == GLFW_KEY_SPACE || key == GLFW_KEY_ESCAPE) && action == GLFW_RELEASE )
+                if (r <= 1 && up_col){ r += .05;}
+                else if (b <= 1 && up_col) { b += .05; }
+                else if (g <= 1 && up_col) { g += .05; if (g >= .99) {up_col = false;} }
+                else if (r > 0 && (! up_col)) {r -= .05;}
+                else if (b > 0 && (! up_col)) {b -= .05;}
+                else if (g > .1 && (! up_col)) {g -=.05;}
                 else if (! up_col){ r = 0; g = 0; b = 0; up_col = true; }
-                System.out.println(r + " " + g + " " + b);
+                System.out.println("Color Wheel Data (red, green, blue) - " + r + " " + g + " " + b);
                glClearColor(r,g,b,0.0f);
                 float place_hold = red = r;
                 float place_hold2 = blue = b ;
                 float place_hold3 = green = g ;
                 boolean place_holder = up_color = up_col;
+                if (key == GLFW_KEY_ESCAPE)
+                {
+                    glfwSetWindowShouldClose(window, true);
+                }
         });
-
         // Get the thread stack and push a new frame
         try ( MemoryStack stack = stackPush() ) {
             IntBuffer pWidth = stack.mallocInt(1); // int*
