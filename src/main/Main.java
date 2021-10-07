@@ -16,6 +16,9 @@ class HelloWorld {
     static float red = 0.0f;
     static float blue = 0.0f;
     static float green = 0.0f;
+    static boolean red_pass = true;
+    static boolean blue_pass = true;
+    static boolean up_color = true;
 
     // The window handle
     private long window;
@@ -60,17 +63,22 @@ class HelloWorld {
                 glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
         });
 
-        // Change Color of Window
-        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> { float r = red ; float g = green ; float b = blue;
+        // Change Color of Window by Hitting Space
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {boolean up_col = up_color; float r = red ; float g = green ; float b = blue;
             if ( key == GLFW_KEY_SPACE && action == GLFW_RELEASE )
-               if (r <= 1){ r += .1; }
-                else if (b <= 1) { b += .1; }
-                else if (g <= 1) { g += .1; }
-                else { r = 0; g = 0; b = 0;}
+                if (r <= 1 && up_col){ r += .1;}
+                else if (b <= 1 && up_col) { b += .1; }
+                else if (g <= 1 && up_col) { g += .1; if (g >= .99) {up_col = false;} }
+                else if (r > 0 && (! up_col)) {r -= .1;}
+                else if (b > 0 && (! up_col)) {b -= .1;}
+                else if (g > .1 && (! up_col)) {g -=.1;}
+                else if (! up_col){ r = 0; g = 0; b = 0; up_col = true; }
+                System.out.println(r + " " + g + " " + b);
                glClearColor(r,g,b,0.0f);
                 float place_hold = red = r;
                 float place_hold2 = blue = b ;
                 float place_hold3 = green = g ;
+                boolean place_holder = up_color = up_col;
         });
 
         // Get the thread stack and push a new frame
