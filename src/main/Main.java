@@ -3,16 +3,14 @@ import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
-
 import java.nio.*;
-
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
-class HelloWorld {
+class Main {
     static float red = 0.0f;
     static float blue = 0.0f;
     static float green = 0.0f;
@@ -62,14 +60,14 @@ class HelloWorld {
         // Change Color of Window
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> { float r = red ; float g = green ; float b = blue;
             if ( key == GLFW_KEY_SPACE && action == GLFW_RELEASE )
-               if (r <= 1){ r += .1; }
+                if (r <= 1){ r += .1; }
                 else if (b <= 1) { b += .1; }
                 else if (g <= 1) { g += .1; }
                 else { r = 0; g = 0; b = 0;}
-               glClearColor(r,g,b,0.0f);
-                float place_hold = red = r;
-                float place_hold2 = blue = b ;
-                float place_hold3 = green = g ;
+            glClearColor(r,g,b,0.0f);
+            float place_hold = red = r;
+            float place_hold2 = blue = b ;
+            float place_hold3 = green = g ;
         });
 
         // Get the thread stack and push a new frame
@@ -125,7 +123,7 @@ class HelloWorld {
     }
 
     public static void main(String[] args) {
-        new HelloWorld().run();
+        new Main().run();
     }
 
 }
