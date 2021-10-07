@@ -63,7 +63,7 @@ class HelloWorld {
                 glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
         });
 
-        // Change Color of Window by Hitting Space
+        // Change Color of Window by Hitting Space in Color Wheel Order.
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {boolean up_col = up_color; float r = red ; float g = green ; float b = blue;
             if ( key == GLFW_KEY_SPACE && action == GLFW_RELEASE )
                 if (r <= 1 && up_col){ r += .1;}
