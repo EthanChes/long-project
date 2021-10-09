@@ -114,24 +114,66 @@ class HelloWorld {
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
-        while ( !glfwWindowShouldClose(window) ) {
+        float cube_top_left_y = .5f;
+        float cube_top_right_y = .5f;
+        float cube_bottom_right_y = -.5f;
+        float cube_bottom_left_y = -.5f;
+        float cube_top_left_x = -.5f;
+        float cube_top_right_x = .5f;
+        float cube_bottom_right_x = .5f;
+        float cube_bottom_left_x = -.5f;
+        while (!glfwWindowShouldClose(window)) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
             // Poll for window events. The key callback above will only be
             // invoked during this call.
             glfwPollEvents();
-            // Square Drawing with cool colors
+            // Square Drawing with cool colors Arrows to extend/minimize cube
             glBegin(GL_QUADS);
-                glColor4f(0.0f,1.0f,0.0f,0.0f);
-                glVertex2f(-.5f,.5f);
-                glColor4f(1.0f,0.0f,0.0f,0.0f);
-                glVertex2f(.5f,.5f);
-                glColor4f(0.0f,0.0f,1.0f,0.0f);
-                glVertex2f(.5f,-.5f);
-                glColor4f(1.0f,1.0f,1.0f,0.0f);
-                glVertex2f(-.5f,-.5f);
-           glEnd();
-            glfwSwapBuffers(window); // swap the color buffers
+            glColor4f(0.0f, 1.0f, 0.0f, 0.0f);
+            glVertex2f(cube_top_left_x, cube_top_left_y); // -.5 .5
+            glColor4f(1.0f, 0.0f, 0.0f, 0.0f);
+            glVertex2f(cube_top_right_x, cube_top_right_y); // .5 .5
+            glColor4f(0.0f, 0.0f, 1.0f, 0.0f);
+            glVertex2f(cube_bottom_right_x, cube_bottom_right_y); // .5 -.5
+            glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
+            glVertex2f(cube_bottom_left_x, cube_bottom_left_y); // -.5 -.5
+            glEnd();
+            // Change Size of Cube Using Arrows
+            if (glfwGetKey(window, GLFW_KEY_UP) == GL_TRUE) {
+                System.out.println("Key Up");
+                cube_top_right_y += .01; cube_top_left_y += .01; cube_bottom_left_y -= .01; cube_bottom_right_y -=.01;
+            }
+           if (glfwGetKey(window, GLFW_KEY_RIGHT) == GL_TRUE) {
+                System.out.println("Key Right");
+                cube_top_right_x += .01; cube_bottom_right_x += .01; cube_top_left_x -= .01; cube_bottom_left_x -=.01;
+            }
+            if (glfwGetKey(window, GLFW_KEY_LEFT) == GL_TRUE) {
+                System.out.println("Key Left");
+                cube_bottom_left_x += .01; cube_top_left_x += .01; cube_top_right_x -= .01; cube_bottom_right_x -= .01;
+            }
+            if (glfwGetKey(window, GLFW_KEY_DOWN) == GL_TRUE) {
+                System.out.println("Key Down");
+                cube_bottom_left_y += .01; cube_bottom_right_y += .01; cube_top_right_y -= .01; cube_top_left_y -=.01;
+            }
+            // Change Location/Translate Cube using WASD
+            if (glfwGetKey(window,GLFW_KEY_W) == GL_TRUE) {
+                System.out.println("Translate Up");
+                cube_top_right_y += .01; cube_top_left_y += .01; cube_bottom_right_y += .01; cube_bottom_left_y += .01;
+            }
+            if (glfwGetKey(window,GLFW_KEY_S) == GL_TRUE) {
+                System.out.println("Translate Down");
+                cube_top_right_y -= .01; cube_top_left_y -= .01; cube_bottom_right_y -= .01; cube_bottom_left_y -= .01;
+            }
+            if (glfwGetKey(window,GLFW_KEY_A) == GL_TRUE) {
+                System.out.println("Translate Left");
+                cube_top_right_x -= .01; cube_top_left_x -= .01; cube_bottom_right_x -= .01; cube_bottom_left_x -= .01;
+            }
+            if (glfwGetKey(window,GLFW_KEY_D) == GL_TRUE) {
+                System.out.println("Translate Right");
+                cube_top_right_x += .01; cube_top_left_x += .01; cube_bottom_right_x += .01; cube_bottom_left_x += .01;
+            }
+            glfwSwapBuffers(window); // swap the color buffers}}}}
         }
     }
 
