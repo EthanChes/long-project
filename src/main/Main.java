@@ -120,6 +120,7 @@ class HelloWorld {
             // Poll for window events. The key callback above will only be
             // invoked during this call.
             glfwPollEvents();
+            // Square Drawing with cool colors
             glBegin(GL_QUADS);
                 glColor4f(0.0f,1.0f,0.0f,0.0f);
                 glVertex2f(-.5f,.5f);
