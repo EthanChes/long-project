@@ -180,6 +180,7 @@ class HelloWorld {
                 System.out.println("Translate Right");
                 cube_top_right_x += .01; cube_top_left_x += .01; cube_bottom_right_x += .01; cube_bottom_left_x += .01;
             }
+            // Fix Algorithm Below
             if (move_to_cursor) { // Make sure boolean is true before moving square
                 cube_top_right_x = (float) getMousePosX(window)/1000;
                 cube_top_right_y = (float) getMousePosY(window)/1000;
