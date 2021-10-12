@@ -16,6 +16,10 @@ class HelloWorld {
     static float green = 0.0f;
     static boolean up_color = true;
     static double time = 0 ;
+    static boolean top_left = false ;
+    static boolean top_right = false ;
+    static boolean bottom_right = false ;
+    static boolean bottom_left =  false ;
 
     // The window handle
     private long window;
@@ -28,6 +32,12 @@ class HelloWorld {
         DoubleBuffer y_pos = BufferUtils.createDoubleBuffer(1);
         glfwGetCursorPos(window,null,y_pos);
         return y_pos.get(0);
+    }
+    public double convertMousePosX(long window) {
+        return (getMousePosX(window)/500 -1) ;
+    }
+    public double convertMousePosY(long window) {
+        return -(getMousePosY(window)/500 - 1) ;
     }
     public void run() {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
@@ -181,12 +191,54 @@ class HelloWorld {
                 System.out.println("Translate Right");
                 cube_top_right_x += .01; cube_top_left_x += .01; cube_bottom_right_x += .01; cube_bottom_left_x += .01;
             }
-            // Fix Algorithm Below
-            if (move_to_cursor) { // Make sure boolean is true before moving square & is on index 1-1000 with y's upside down
-                cube_top_right_x = (((float) getMousePosX(window))/500) - 1;
-                cube_top_right_y = -((((float) getMousePosY(window))/500) - 1);
+            if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GL_TRUE) {
+                System.out.println("Enabling Transfer of Vertex Selection");
+                top_right = false ;
+                top_left = false ;
+                bottom_left = false ;
+                bottom_right = false ;
             }
-            // Cool Thing I made.
+            if (move_to_cursor) { // Make Sure Boolean is true before running (Moves selected corner to cursor) Until Enter is pressed
+                if (glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_1) == GL_TRUE) {
+                    if  ((convertMousePosX(window) > cube_top_right_x - .1 && convertMousePosX(window) < cube_top_right_x + .1 && convertMousePosY(window) > cube_top_right_y - .1 && convertMousePosY(window) < cube_top_right_y + .1) || top_right)
+                    {
+                        System.out.println("Top Right Selected");
+                        if (! (top_left || bottom_right || bottom_left)) {
+                            cube_top_right_x = (float) convertMousePosX(window);
+                            cube_top_right_y = (float) convertMousePosY(window);
+                            top_right = true;
+                        }
+                    }
+                    if  ((convertMousePosX(window) > cube_bottom_right_x - .1 && convertMousePosX(window) < cube_bottom_right_x + .1 && convertMousePosY(window) > cube_bottom_right_y - .1 && convertMousePosY(window) < cube_bottom_right_y + .1) || bottom_right)
+                    {
+                        System.out.println("Bottom Right Selected");
+                        if (! (top_left || top_right || bottom_left)) {
+                            cube_bottom_right_x = (float) convertMousePosX(window);
+                            cube_bottom_right_y = (float) convertMousePosY(window);
+                            bottom_right = true;
+                        }
+                    }
+                    if  ((convertMousePosX(window) > cube_top_left_x - .1 && convertMousePosX(window) < cube_top_left_x + .1 && convertMousePosY(window) > cube_top_left_y - .1 && convertMousePosY(window) < cube_top_left_y + .1) || top_left)
+                    {
+                        System.out.println("Top Left Selected");
+                        if (! (top_right || bottom_right || bottom_left)) {
+                            cube_top_left_x = (float) convertMousePosX(window);
+                            cube_top_left_y = (float) convertMousePosY(window);
+                            top_left = true;
+                        }
+                    }
+                    if  ((convertMousePosX(window) > cube_bottom_left_x - .1 && convertMousePosX(window) < cube_bottom_left_x + .1 && convertMousePosY(window) > cube_bottom_left_y - .1 && convertMousePosY(window) < cube_bottom_left_y + .1) || bottom_left)
+                    {
+                        System.out.println("Bottom Left Selected");
+                        if (! (top_right || bottom_right || top_left)) {
+                            cube_bottom_left_x = (float) convertMousePosX(window);
+                            cube_bottom_left_y = (float) convertMousePosY(window);
+                            bottom_left = true;
+                        }
+                    }
+                }
+            }
+            // Toggle Move Square With Cursor
             if (glfwGetKey(window,GLFW_KEY_ENTER) == GL_TRUE) {
                 if (move_to_cursor && (glfwGetTime() - time > .1)) {
                     move_to_cursor = false ;
@@ -194,6 +246,10 @@ class HelloWorld {
                 }
                 else if (glfwGetTime() - time > .1) {
                     move_to_cursor = true ;
+                    top_right = false ;
+                    top_left = false ;
+                    bottom_left = false ;
+                    bottom_right = false ;
                     time = glfwGetTime();
                 }
             }
