@@ -15,10 +15,20 @@ class HelloWorld {
     static float blue = 0.0f;
     static float green = 0.0f;
     static boolean up_color = true;
+    static double time = 0 ;
 
     // The window handle
     private long window;
-
+    public double getMousePosX(long window) {
+        DoubleBuffer x_pos = BufferUtils.createDoubleBuffer(1);
+        glfwGetCursorPos(window,x_pos,null);
+        return x_pos.get(0);
+    }
+    public double getMousePosY(long window) {
+        DoubleBuffer y_pos = BufferUtils.createDoubleBuffer(1);
+        glfwGetCursorPos(window,null,y_pos);
+        return y_pos.get(0);
+    }
     public void run() {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
@@ -65,7 +75,6 @@ class HelloWorld {
                 else if (b > 0 && (! up_col)) {b -= .05;}
                 else if (g > .1 && (! up_col)) {g -=.05;}
                 else if (! up_col){ r = 0; g = 0; b = 0; up_col = true; }
-            System.out.println("Color Wheel Data (red, green, blue) - " + r + " " + g + " " + b);
             glClearColor(r,g,b,0.0f);
             float place_hold = red = r;
             float place_hold2 = blue = b ;
@@ -111,7 +120,6 @@ class HelloWorld {
 
         // Set the clear color
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         float cube_top_left_y = .5f;
@@ -122,9 +130,9 @@ class HelloWorld {
         float cube_top_right_x = .5f;
         float cube_bottom_right_x = .5f;
         float cube_bottom_left_x = -.5f;
+        boolean move_to_cursor = false ;
         while (!glfwWindowShouldClose(window)) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
-
             // Poll for window events. The key callback above will only be
             // invoked during this call.
             glfwPollEvents();
@@ -144,7 +152,7 @@ class HelloWorld {
                 System.out.println("Key Up");
                 cube_top_right_y += .01; cube_top_left_y += .01; cube_bottom_left_y -= .01; cube_bottom_right_y -=.01;
             }
-           if (glfwGetKey(window, GLFW_KEY_RIGHT) == GL_TRUE) {
+            if (glfwGetKey(window, GLFW_KEY_RIGHT) == GL_TRUE) {
                 System.out.println("Key Right");
                 cube_top_right_x += .01; cube_bottom_right_x += .01; cube_top_left_x -= .01; cube_bottom_left_x -=.01;
             }
@@ -172,6 +180,21 @@ class HelloWorld {
             if (glfwGetKey(window,GLFW_KEY_D) == GL_TRUE) {
                 System.out.println("Translate Right");
                 cube_top_right_x += .01; cube_top_left_x += .01; cube_bottom_right_x += .01; cube_bottom_left_x += .01;
+            }
+            // Fix Algorithm Below
+            if (move_to_cursor) { // Make sure boolean is true before moving square & is on index 1-1000 with y's upside down
+                cube_top_right_x = (((float) getMousePosX(window))/500) - 1;
+                cube_top_right_y = -((((float) getMousePosY(window))/500) - 1);
+            }
+            if (glfwGetKey(window,GLFW_KEY_ENTER) == GL_TRUE) {
+                if (move_to_cursor && (glfwGetTime() - time > .1)) {
+                    move_to_cursor = false ;
+                    time = glfwGetTime();
+                }
+                else if (glfwGetTime() - time > .1) {
+                    move_to_cursor = true ;
+                    time = glfwGetTime();
+                }
             }
             glfwSwapBuffers(window); // swap the color buffers}}}}
         }
