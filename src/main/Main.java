@@ -186,6 +186,7 @@ class HelloWorld {
                 cube_top_right_x = (((float) getMousePosX(window))/500) - 1;
                 cube_top_right_y = -((((float) getMousePosY(window))/500) - 1);
             }
+            // Cool Thing I made.
             if (glfwGetKey(window,GLFW_KEY_ENTER) == GL_TRUE) {
                 if (move_to_cursor && (glfwGetTime() - time > .1)) {
                     move_to_cursor = false ;
