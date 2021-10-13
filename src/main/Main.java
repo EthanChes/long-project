@@ -125,8 +125,10 @@ class HelloWorld {
     }
 
     private void loop() {
-        GL.createCapabilities();
+        GL.createCapabilities(); // Make sure this stays at top
         glfwMakeContextCurrent(window);
+        glEnable(GL_TEXTURE_2D);
+        Texture tex = new Texture("./res/img.png");
 
         // Set the clear color
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -146,15 +148,22 @@ class HelloWorld {
             // Poll for window events. The key callback above will only be
             // invoked during this call.
             glfwPollEvents();
+
+            tex.bind();
+
             // Square Drawing with cool colors Arrows to extend/minimize cube
             glBegin(GL_QUADS);
-            glColor4f(0.0f, 1.0f, 0.0f, 0.0f);
+            //glColor4f(0.0f, 1.0f, 0.0f, 0.0f);
+            glTexCoord2f(0,0);
             glVertex2f(cube_top_left_x, cube_top_left_y); // -.5 .5
-            glColor4f(1.0f, 0.0f, 0.0f, 0.0f);
+            //glColor4f(1.0f, 0.0f, 0.0f, 0.0f);
+            glTexCoord2f(0,1);
             glVertex2f(cube_top_right_x, cube_top_right_y); // .5 .5
-            glColor4f(0.0f, 0.0f, 1.0f, 0.0f);
+            //glColor4f(0.0f, 0.0f, 1.0f, 0.0f);
+            glTexCoord2f(1,1);
             glVertex2f(cube_bottom_right_x, cube_bottom_right_y); // .5 -.5
-            glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
+            //glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
+            glTexCoord2f(1,0);
             glVertex2f(cube_bottom_left_x, cube_bottom_left_y); // -.5 -.5
             glEnd();
             // Change Size of Cube Using Arrows
