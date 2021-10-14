@@ -126,6 +126,10 @@ class HelloWorld {
 
     private void loop() {
         GL.createCapabilities(); // Make sure this stays at top
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         glfwMakeContextCurrent(window);
         glEnable(GL_TEXTURE_2D);
         Texture tex = new Texture("./res/img.png");
@@ -153,7 +157,7 @@ class HelloWorld {
 
             // Square Drawing with cool colors Arrows to extend/minimize cube
             glBegin(GL_QUADS);
-            //glColor4f(0.0f, 1.0f, 0.0f, 0.0f);
+            //glColor4f(1.0f, 1.0f, 0.0f, 0.0f);
             glTexCoord2f(0,0);
             glVertex2f(cube_top_left_x, cube_top_left_y); // -.5 .5
             //glColor4f(1.0f, 0.0f, 0.0f, 0.0f);
