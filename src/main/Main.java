@@ -15,6 +15,11 @@ class HelloWorld {
     static float blue = 0.0f;
     static float green = 0.0f;
     static boolean up_color = true;
+    static double time = 0 ;
+    static boolean top_left = false ;
+    static boolean top_right = false ;
+    static boolean bottom_right = false ;
+    static boolean bottom_left =  false ;
 
     // The window handle
     private long window;
@@ -25,7 +30,14 @@ class HelloWorld {
     }
     public double getMousePosY(long window) {
         DoubleBuffer y_pos = BufferUtils.createDoubleBuffer(1);
+        glfwGetCursorPos(window,null,y_pos);
         return y_pos.get(0);
+    }
+    public double convertMousePosX(long window) {
+        return (getMousePosX(window)/500 -1) ;
+    }
+    public double convertMousePosY(long window) {
+        return -(getMousePosY(window)/500 - 1) ;
     }
     public void run() {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
@@ -73,7 +85,6 @@ class HelloWorld {
                 else if (b > 0 && (! up_col)) {b -= .05;}
                 else if (g > .1 && (! up_col)) {g -=.05;}
                 else if (! up_col){ r = 0; g = 0; b = 0; up_col = true; }
-            System.out.println("Color Wheel Data (red, green, blue) - " + r + " " + g + " " + b);
             glClearColor(r,g,b,0.0f);
             float place_hold = red = r;
             float place_hold2 = blue = b ;
@@ -114,8 +125,14 @@ class HelloWorld {
     }
 
     private void loop() {
-        GL.createCapabilities();
+        GL.createCapabilities(); // Make sure this stays at top
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         glfwMakeContextCurrent(window);
+        glEnable(GL_TEXTURE_2D);
+        Texture tex = new Texture("./res/img.png");
 
         // Set the clear color
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -135,15 +152,22 @@ class HelloWorld {
             // Poll for window events. The key callback above will only be
             // invoked during this call.
             glfwPollEvents();
+
+            tex.bind();
+
             // Square Drawing with cool colors Arrows to extend/minimize cube
             glBegin(GL_QUADS);
-            glColor4f(0.0f, 1.0f, 0.0f, 0.0f);
+            //glColor4f(1.0f, 1.0f, 0.0f, 0.0f);
+            glTexCoord2f(0,0);
             glVertex2f(cube_top_left_x, cube_top_left_y); // -.5 .5
-            glColor4f(1.0f, 0.0f, 0.0f, 0.0f);
+            //glColor4f(1.0f, 0.0f, 0.0f, 0.0f);
+            glTexCoord2f(0,1);
             glVertex2f(cube_top_right_x, cube_top_right_y); // .5 .5
-            glColor4f(0.0f, 0.0f, 1.0f, 0.0f);
+            //glColor4f(0.0f, 0.0f, 1.0f, 0.0f);
+            glTexCoord2f(1,1);
             glVertex2f(cube_bottom_right_x, cube_bottom_right_y); // .5 -.5
-            glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
+            //glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
+            glTexCoord2f(1,0);
             glVertex2f(cube_bottom_left_x, cube_bottom_left_y); // -.5 -.5
             glEnd();
             // Change Size of Cube Using Arrows
@@ -180,17 +204,66 @@ class HelloWorld {
                 System.out.println("Translate Right");
                 cube_top_right_x += .01; cube_top_left_x += .01; cube_bottom_right_x += .01; cube_bottom_left_x += .01;
             }
-            // Fix Algorithm Below
-            if (move_to_cursor) { // Make sure boolean is true before moving square
-                cube_top_right_x = (float) getMousePosX(window)/1000;
-                cube_top_right_y = (float) getMousePosY(window)/1000;
+            if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GL_TRUE) {
+                System.out.println("Enabling Transfer of Vertex Selection");
+                top_right = false ;
+                top_left = false ;
+                bottom_left = false ;
+                bottom_right = false ;
             }
-            if (glfwGetKey(window,GLFW_KEY_ENTER) == GL_TRUE) {
-                if (move_to_cursor) {
-                    move_to_cursor = false ;
+            if (move_to_cursor) { // Make Sure Boolean is true before running (Moves selected corner to cursor) Until Enter is pressed
+                if (glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_1) == GL_TRUE) {
+                    if  ((convertMousePosX(window) > cube_top_right_x - .1 && convertMousePosX(window) < cube_top_right_x + .1 && convertMousePosY(window) > cube_top_right_y - .1 && convertMousePosY(window) < cube_top_right_y + .1) || top_right)
+                    {
+                        System.out.println("Top Right Selected");
+                        if (! (top_left || bottom_right || bottom_left)) {
+                            cube_top_right_x = (float) convertMousePosX(window);
+                            cube_top_right_y = (float) convertMousePosY(window);
+                            top_right = true;
+                        }
+                    }
+                    if  ((convertMousePosX(window) > cube_bottom_right_x - .1 && convertMousePosX(window) < cube_bottom_right_x + .1 && convertMousePosY(window) > cube_bottom_right_y - .1 && convertMousePosY(window) < cube_bottom_right_y + .1) || bottom_right)
+                    {
+                        System.out.println("Bottom Right Selected");
+                        if (! (top_left || top_right || bottom_left)) {
+                            cube_bottom_right_x = (float) convertMousePosX(window);
+                            cube_bottom_right_y = (float) convertMousePosY(window);
+                            bottom_right = true;
+                        }
+                    }
+                    if  ((convertMousePosX(window) > cube_top_left_x - .1 && convertMousePosX(window) < cube_top_left_x + .1 && convertMousePosY(window) > cube_top_left_y - .1 && convertMousePosY(window) < cube_top_left_y + .1) || top_left)
+                    {
+                        System.out.println("Top Left Selected");
+                        if (! (top_right || bottom_right || bottom_left)) {
+                            cube_top_left_x = (float) convertMousePosX(window);
+                            cube_top_left_y = (float) convertMousePosY(window);
+                            top_left = true;
+                        }
+                    }
+                    if  ((convertMousePosX(window) > cube_bottom_left_x - .1 && convertMousePosX(window) < cube_bottom_left_x + .1 && convertMousePosY(window) > cube_bottom_left_y - .1 && convertMousePosY(window) < cube_bottom_left_y + .1) || bottom_left)
+                    {
+                        System.out.println("Bottom Left Selected");
+                        if (! (top_right || bottom_right || top_left)) {
+                            cube_bottom_left_x = (float) convertMousePosX(window);
+                            cube_bottom_left_y = (float) convertMousePosY(window);
+                            bottom_left = true;
+                        }
+                    }
                 }
-                else {
+            }
+            // Toggle Move Square With Cursor
+            if (glfwGetKey(window,GLFW_KEY_ENTER) == GL_TRUE) {
+                if (move_to_cursor && (glfwGetTime() - time > .1)) {
+                    move_to_cursor = false ;
+                    time = glfwGetTime();
+                }
+                else if (glfwGetTime() - time > .1) {
                     move_to_cursor = true ;
+                    top_right = false ;
+                    top_left = false ;
+                    bottom_left = false ;
+                    bottom_right = false ;
+                    time = glfwGetTime();
                 }
             }
             glfwSwapBuffers(window); // swap the color buffers}}}}
@@ -202,4 +275,3 @@ class HelloWorld {
     }
 
 }
-
